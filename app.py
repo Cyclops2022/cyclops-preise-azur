@@ -132,44 +132,34 @@ mindestdatenzahl = 10
 def dash_visualisiere_binäre_ergebnisse(filter, merkmal, merkmale):
     """Visualisiert die Preisverteilungen eines binären Merkmals in Abhängigkeit seiner beiden Ausprägungen.
       Hierbei wird unterschieden, ob das Merkmal bereits den Wert 1 besitzt also vom User nicht mehr verbessert werden kann, oder nicht. Entsprechend wird nur die Preisverteilung oder der Preisunterschied ausgegeben."""
-    # if filter[merkmal] == 1:  # Wenn das Merkmal angegeben wurde
-    #     merkmalsausprägungen = np.array([0, 1])
-    #     x_input = [int(i) for i in filter_df(filter, merkmale)["Preis"]]  # Auf ganze Zahlen gerundet -> Visualisieren
-    #     y_input = list(filter_df(filter, merkmale)[merkmal])
-    #
-    #     if len(x_input) >= 0:# (mindestdatenzahl -10):
-    #         count = Counter(zip(x_input, y_input))
-    #         xs = np.array([x for (x, y), c in count.items()])
-    #         ys = np.array([y for (x, y), c in count.items()])
-    #         cs = np.array([c for (x, y), c in count.items()])
-    #         cmin = cs.min()
-    #         cmax = cs.max()
-    #         cmid = (cmin + cmax) / 2
-    #         plotdaten = pd.DataFrame((xs, ys, cs)).transpose()
-    #         plotdaten.columns = ["Preis in Euro", "y", "Anzahl"]
-    #         fig = px.scatter(plotdaten, x="Preis in Euro", y="y", color="Anzahl", size="Anzahl",
-    #                          hover_data={"Preis in Euro": True, "y": False, "Anzahl": True},
-    #                          color_continuous_scale="viridis", range_y=[0.95, 1.05], template="ggplot2")
-    #         fig.update_layout(yaxis=dict(title="", tickmode='array', tickvals=[], ticktext=[]), font=dict(size=18))
-    #         return fig
-    #     else:
-    #         return px.bar(template="ggplot2")#"Die Anzahl an Dateneinträgen ist zu gering, um eine statistische Aussage treffen zu können."
-    #
-    # if filter[merkmal] == 0:  # Wenn das Merkmal nicht angegeben wurde
+    
+    b=merkmale.copy()
+
+    if merkmal=="Wiederkehrendes Angebot" and "Angebotsfrequenz" in b:
+      b.remove("Angebotsfrequenz")
+
     filter[merkmal] = 0
     merkmalsausprägungen = np.array([0, 1])
-    x_input = [int(i) for i in filter_df(filter, merkmale)["Preis"]]  # Auf ganze Zahlen gerundet für Visualisierung
-    y_input = list(filter_df(filter, merkmale)[merkmal])
+    x_input = [int(i) for i in filter_df(filter, b)["Preis"]]  # Auf ganze Zahlen gerundet für Visualisierung
+    y_input = list(filter_df(filter, b)[merkmal])
+
     if x_input:
         m1 = np.mean(x_input)
         s1 = np.std(x_input)
+    else:
+        m1=0
+        s1=0
     filter[merkmal] = 1
-    x_input = x_input + [int(i) for i in filter_df(filter, merkmale)["Preis"]]
-    if [int(i) for i in filter_df(filter, merkmale)["Preis"]]:
-        m2 = np.mean([int(i) for i in filter_df(filter, merkmale)["Preis"]])
-        s2 = np.std([int(i) for i in filter_df(filter, merkmale)["Preis"]])
-    y_input = y_input + list(filter_df(filter, merkmale)[merkmal])
+    x_input = x_input + [int(i) for i in filter_df(filter, b)["Preis"]]
+    if len([int(i) for i in filter_df(filter, b)["Preis"]])>0:
+        m2 = np.mean([int(i) for i in filter_df(filter, b)["Preis"]])
+        s2 = np.std([int(i) for i in filter_df(filter, b)["Preis"]])
+    else:
+        m2=0
+        s2=0
+    y_input = y_input + list(filter_df(filter, b)[merkmal])
     filter[merkmal] = 0  # Wieder zurücksetzen
+
     if x_input and len(x_input) >= 2 * mindestdatenzahl:
         count = Counter(zip(x_input, y_input))
         xs = np.array([x for (x, y), c in count.items()])
@@ -204,7 +194,7 @@ def dash_visualisiere_binäre_ergebnisse(filter, merkmal, merkmale):
             borderpad=4,
             bgcolor="#83B0B6",
             opacity=0.8
-        )
+            )
         fig.add_annotation(
             x=m2,
             y=0.8,
@@ -224,7 +214,7 @@ def dash_visualisiere_binäre_ergebnisse(filter, merkmal, merkmale):
             borderpad=4,
             bgcolor="#83B0B6",
             opacity=0.8
-        )
+            ) 
         return fig
     else:  # "Die Anzahl an Dateneinträgen ist zu gering, um eine statistische Aussage treffen zu können."
         return empty_plot()
@@ -237,7 +227,13 @@ def dash_visualisiere_kategoriale_ergebnisse(filter, merkmal, merkmale):
     Y = []
     labels = []
     i = 0
-    for a in set(df[merkmal]):
+    a_values=set(df[merkmal])
+    if merkmal == "Din Spec Level":
+      a_values=['Level 1', 'Level 2', 'Level 3', 'Level 4']
+    if merkmal == "Angebotsfrequenz":
+      a_values=["Einmalig", "Wöchentlich", "Zweiwöchentlich", "Monatlich", "Quartalsweise", "Jährlich"]
+
+    for a in a_values:
         b = merkmale.copy()
         b.remove(merkmal)
         data = filter_df(filter, b)  # Filter für alle Merkmale außer demjenigen, das hier untersucht wird
@@ -349,11 +345,9 @@ dash_app.layout = html.Div([
     html.Div([dcc.Markdown('''
 #### Wie kann ich für meine Kunststoffabfälle oder Kunststoffrezyklate einen höheren Preis erzielen?    
 Dieses Dashboard beantwortet diese Frage auf Grundlage der Daten von (hier simulierten) schon abgeschlossenen Transaktionen.
-
 Mit den Schaltflächen können Sie Daten zu Ihrem Angebot angeben. Das Dashboard zeigt Ihnen dann eine Übersicht über die Verteilung der Preise von ähnlichen Angeboten an.    
 Im nächsten Schritt können Sie sich anzeigen lassen, wie sich die Preisverteilung ändert, wenn Sie mehr Informationen zu Ihrem Angebot bereitstellen oder, wenn Sie eine Ihrer Angaben ändern.    
 Damit können Sie dann sehen, welche Informationen Sie noch zu Ihrem Angebot hinzufügen können, um einen höheren Preis erzielen zu können.
-
 Das Dashboard entstand im Rahmen des CYCLOPS Projektes, gefördert durch das Bundesministerium für Bildung und Forschung.'''),]),
 
     html.Br(),
