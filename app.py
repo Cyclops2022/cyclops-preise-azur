@@ -13,7 +13,7 @@ N = 100000  # Länge des Datensatzes
 
 feat_1 = [0, 1]  # Wiederkehrendes Angebot
 feat_2 = ["transparent", "grau", "weiß", "farbig"]  # Farbe
-feat_3 = ["Level 1", "Level 2", "Level 3", "Level 4"]  # Din Spec Level
+feat_3 = ["Level 1", "Level 2", "Level 3", "Level 4"]  # DIN SPEC 91446 Level
 feat_4 = ["PET", "PP", "HDPE", "LDPE"]  # Sorte
 feat_5 = [0, 1]  # Rezyklat-Quelle
 feat_6 = ["Einmalig", "Wöchentlich", "Zweiwöchentlich", "Monatlich", "Quartalsweise", "Jährlich"]  # Angebotsfrequenz
@@ -24,7 +24,7 @@ id = list(range(N))
 # Wählt die Werte der Features N mal zufällig aus
 x = np.random.choice(feat_1, p=[0.7, 0.3], size=N)  # Wiederkehrend -> 70% Nein
 y = np.random.choice(feat_2, size=N)  # Farbe gleichverteilt
-u = np.random.choice(feat_3, size=N)  # Din Spec Level gleichverteilt
+u = np.random.choice(feat_3, size=N)  # DIN SPEC 91446 Level gleichverteilt
 v = np.random.choice(feat_4, size=N)  # Kunststoffsorte gleichverteilt
 w = np.random.choice(feat_5, p=[0.2, 0.8], size=N)  # Rezyklat Quelle: 80% Post-Industrial (=1)
 
@@ -87,11 +87,11 @@ def preis(f_1, f_3, f_4, f_5, kont_variable):  # Preis in Abhängigkeit des Mate
     return np.random.normal(mu, sigma)
 
 
-df = pd.DataFrame({"Wiederkehrendes Angebot": x, "Farbe": y, "Din Spec Level": u, "Sorte": v, "Rezyklat Quelle": w,
+df = pd.DataFrame({"Wiederkehrendes Angebot": x, "Farbe": y, "DIN SPEC 91446 Level": u, "Sorte": v, "Rezyklat Quelle": w,
                    "Angebotsfrequenz": z, "Menge in Tonnen": t, "Versandstandort": versand,
                    "Materialursprung": ursprung})
 df["Preis"] = [round(
-    preis(df["Wiederkehrendes Angebot"][i], df["Din Spec Level"][i], df["Sorte"][i], df["Rezyklat Quelle"][i],
+    preis(df["Wiederkehrendes Angebot"][i], df["DIN SPEC 91446 Level"][i], df["Sorte"][i], df["Rezyklat Quelle"][i],
           df["Menge in Tonnen"][i]), 2) for i in range(N)]
 
 # df.head(10)
@@ -100,10 +100,10 @@ df["Preis"] = [round(
 #       len(df["Preis"].loc[df["Wiederkehrendes Angebot"] == 1]))
 
 # Input
-filter = {'Wiederkehrendes Angebot': 1, 'Farbe': 'grau', 'Din Spec Level': 'Level 2', 'Sorte': 'PET',
+filter = {'Wiederkehrendes Angebot': 1, 'Farbe': 'grau', 'DIN SPEC 91446 Level': 'Level 2', 'Sorte': 'PET',
           'Rezyklat Quelle': 0, 'Angebotsfrequenz': 'Wöchentlich',
           'Menge in Tonnen': 7.35}  # Filter zum filtern der Daten
-merkmale = ['Wiederkehrendes Angebot', 'Farbe', 'Din Spec Level', 'Sorte', 'Rezyklat Quelle', 'Angebotsfrequenz',
+merkmale = ['Wiederkehrendes Angebot', 'Farbe', 'DIN SPEC 91446 Level', 'Sorte', 'Rezyklat Quelle', 'Angebotsfrequenz',
             'Menge in Tonnen']
 feste_merkmale = ['Qualität', 'Sorte']
 
@@ -226,9 +226,10 @@ def dash_visualisiere_kategoriale_ergebnisse(filter, merkmal, merkmale):
     X = []
     Y = []
     labels = []
+    ticks = []
     i = 0
     a_values=set(df[merkmal])
-    if merkmal == "Din Spec Level":
+    if merkmal == "DIN SPEC 91446 Level":
       a_values=['Level 1', 'Level 2', 'Level 3', 'Level 4']
     if merkmal == "Angebotsfrequenz":
       a_values=["Einmalig", "Wöchentlich", "Zweiwöchentlich", "Monatlich", "Quartalsweise", "Jährlich"]
@@ -240,6 +241,7 @@ def dash_visualisiere_kategoriale_ergebnisse(filter, merkmal, merkmale):
         X.append(list(data["Preis"].loc[data[merkmal] == a]))
         Y.append([i] * len(list(data["Preis"].loc[data[merkmal] == a])))
         labels.append(a)
+        ticks.append(i)
         i = i + 1
 
     x_input = []
@@ -260,7 +262,7 @@ def dash_visualisiere_kategoriale_ergebnisse(filter, merkmal, merkmale):
         fig = px.scatter(plotdaten, x="Preis in Euro", y="y", color="Anzahl", size="Anzahl",
                          hover_data={"Preis in Euro": True, "y": False, "Anzahl": True},
                          color_continuous_scale="viridis", template="ggplot2")
-        fig.update_layout(yaxis=dict(title="", tickmode='array', tickvals=list(set(y_input)), ticktext=labels),
+        fig.update_layout(yaxis=dict(title="", tickmode='array', tickvals=ticks, ticktext=labels),
                           font=dict(size=18))
         return fig
     else:  # "Die Anzahl an Dateneinträgen ist zu gering, um eine statistische Aussage treffen zu können."
@@ -345,7 +347,9 @@ dash_app.layout = html.Div([
     html.Div([dcc.Markdown('''
 #### Wie kann ich für meine Kunststoffabfälle oder Kunststoffrezyklate einen höheren Preis erzielen?    
 Dieses Dashboard beantwortet diese Frage auf Grundlage der Daten von (hier simulierten) schon abgeschlossenen Transaktionen.
-Mit den Schaltflächen können Sie Daten zu Ihrem Angebot angeben. Das Dashboard zeigt Ihnen dann eine Übersicht über die Verteilung der Preise von ähnlichen Angeboten an.    
+Mit den Schaltflächen können Sie Daten zu Ihrem Angebot angeben, welche dann verwendet werden, um die vorhandenen Daten zu filtern. 
+Das Dashboard zeigt Ihnen dann eine Übersicht über die Verteilung der Preise von ähnlichen Angeboten an. Es ist nicht notwendig, alle Felder auszufüllen.
+Je mehr Angaben getätigt werden, desto ähnlicher sind die Angebote, deren Preisverteilung angezeigt wird.    
 Im nächsten Schritt können Sie sich anzeigen lassen, wie sich die Preisverteilung ändert, wenn Sie mehr Informationen zu Ihrem Angebot bereitstellen oder, wenn Sie eine Ihrer Angaben ändern.    
 Damit können Sie dann sehen, welche Informationen Sie noch zu Ihrem Angebot hinzufügen können, um einen höheren Preis erzielen zu können.
 Das Dashboard entstand im Rahmen des CYCLOPS Projektes, gefördert durch das Bundesministerium für Bildung und Forschung.'''),]),
@@ -369,12 +373,22 @@ Das Dashboard entstand im Rahmen des CYCLOPS Projektes, gefördert durch das Bun
                           {'label': 'Transparent', 'value': 'transparent'},
                           {'label': 'Weiß', 'value': 'weiß'},
                           ], value='NA', id="Dropdown_v2"),
-    dcc.Dropdown(options=[{'label': 'Din Spec Level auswählen', 'value': 'NA'},
+    dcc.Dropdown(options=[#{'label': 'DIN SPEC 91446 Level auswählen', 'value': 'NA'},
+                          {'label': html.Span(
+                                [
+                                    html.Span('DIN SPEC 91446 Level auswählen'),
+                                    html.Br(),
+                                    html.Span('''Die DIN SPEC 91446 ist eine Klassifizierung von Kunststoff-Rezyklaten durch Datenqualitätslevels
+                                    für die Verwendung und den (internetbasierten) Handel. Sie wurde von cirplus und DIN im August 2020 mit dem Ziel initiiert,
+                                    einen lange ersehnten Standard für die Industrie zu schaffen.''', style={'font-size': 12, 'padding-left': 0, 'color':'gray'}),
+                                    html.Br(),
+                                ], style={'align-items': 'center', 'justify-content': 'center'}
+                            ), 'value': 'NA'},
                           {'label': 'Level 1', 'value': 'Level 1'},
                           {'label': 'Level 2', 'value': 'Level 2'},
                           {'label': 'Level 3', 'value': 'Level 3'},
                           {'label': 'Level 4', 'value': 'Level 4'},
-                          ], value='NA', id="Dropdown_v3"),
+                          ], value='NA', id="Dropdown_v3", maxHeight=300, optionHeight=60),
     dcc.Dropdown(options=[{'label': 'Kunststoffsorte auswählen', 'value': 'NA'},
                           {'label': 'PET', 'value': 'PET'},
                           {'label': 'PP', 'value': 'PP'},
@@ -394,7 +408,7 @@ Das Dashboard entstand im Rahmen des CYCLOPS Projektes, gefördert durch das Bun
     html.H4("Auswahl des Parameters, für den der Einfluss auf den Preis untersucht werden soll"),
     dcc.Dropdown(
         options=[{'label': 'Parameter auswählen', 'value': 'NA'},
-                 {'label': 'Din Spec Level', 'value': 'Din Spec Level'},
+                 {'label': 'DIN SPEC 91446 Level', 'value': 'DIN SPEC 91446 Level'},
                  {'label': 'Farbe', 'value': 'Farbe'},
                  {'label': 'Wiederkehrendes Angebot', 'value': 'Wiederkehrendes Angebot'},
                  {'label': 'Angebotsfrequenz', 'value': 'Angebotsfrequenz'},
@@ -433,8 +447,8 @@ def cb_render(v1, v2, v3, v4, v5, v6, v7, slct):
         merkmale.append('Farbe')
         filter['Farbe'] = v2
     if v3 != "NA":
-        merkmale.append('Din Spec Level')
-        filter['Din Spec Level'] = v3
+        merkmale.append('DIN SPEC 91446 Level')
+        filter['DIN SPEC 91446 Level'] = v3
     if v4 != "NA":
         merkmale.append('Sorte')
         filter['Sorte'] = v4
