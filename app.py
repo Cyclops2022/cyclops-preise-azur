@@ -388,7 +388,7 @@ Das Dashboard entstand im Rahmen des CYCLOPS Projektes, gefördert durch das Bun
                           {'label': 'Level 2', 'value': 'Level 2'},
                           {'label': 'Level 3', 'value': 'Level 3'},
                           {'label': 'Level 4', 'value': 'Level 4'},
-                          ], value='NA', id="Dropdown_v3", optionHeight=60),
+                          ], value='NA', id="Dropdown_v3"),
     dcc.Dropdown(options=[{'label': 'Kunststoffsorte auswählen', 'value': 'NA'},
                           {'label': 'PET', 'value': 'PET'},
                           {'label': 'PP', 'value': 'PP'},
@@ -401,8 +401,9 @@ Das Dashboard entstand im Rahmen des CYCLOPS Projektes, gefördert durch das Bun
                           ], value='NA', id="Dropdown_v5"),
     dcc.Input(id="kontinuierliche_Variable", type="number", min=0, max=2000, placeholder="Menge in Tonnen eingegeben"),
     html.Br(),
-    html.Div(dcc.Markdown('''
-*  Die DIN SPEC 91446 ist eine Klassifizierung von Kunststoff-Rezyklaten durch Datenqualitätslevels für die Verwendung und den (internetbasierten) Handel. Sie wurde von cirplus und DIN im August 2020 mit dem Ziel initiiert, einen lange ersehnten Standard für die Industrie zu schaffen.'''),]),
+    html.Div([dcc.Markdown('''
+*  Die DIN SPEC 91446 ist eine Klassifizierung von Kunststoff-Rezyklaten durch Datenqualitätslevels für die Verwendung und den (internetbasierten) Handel. 
+Sie wurde von cirplus und DIN im August 2020 mit dem Ziel initiiert, einen lange ersehnten Standard für die Industrie zu schaffen.'''),]),
     html.Br(),
     html.H4("Preisverteilung für Kunststoffe mit den gleichen Angaben", style={'text-align': 'center'}),
     dcc.Graph(id="Preisstatistik", figure={}),
