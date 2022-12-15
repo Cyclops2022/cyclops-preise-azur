@@ -347,7 +347,7 @@ dash_app.layout = html.Div([
     html.Div([dcc.Markdown('''
 #### Wie kann ich für meine Kunststoffabfälle oder Kunststoffrezyklate einen höheren Preis erzielen?    
 Dieses Dashboard beantwortet diese Frage auf Grundlage der Daten von (hier simulierten) schon abgeschlossenen Transaktionen.   
-Mit den Schaltflächen können Sie Daten zu Ihrem Angebot angeben, welche dann verwendet werden, um die vorhandenen Daten zu filtern. 
+Mit den Schaltflächen können Sie Daten zu Ihrem Angebot angeben, welche dann verwendet werden, um die vorhandenen Daten zu filtern.   
 Das Dashboard zeigt Ihnen dann eine Übersicht über die Verteilung der Preise von ähnlichen Angeboten an. Es ist nicht notwendig, alle Felder auszufüllen.   
 Je mehr Angaben getätigt werden, desto ähnlicher sind die Angebote, deren Preisverteilung angezeigt wird.    
 Im nächsten Schritt können Sie sich anzeigen lassen, wie sich die Preisverteilung ändert, wenn Sie mehr Informationen zu Ihrem Angebot bereitstellen oder, wenn Sie eine Ihrer Angaben ändern.    
@@ -402,7 +402,7 @@ Das Dashboard entstand im Rahmen des CYCLOPS Projektes, gefördert durch das Bun
     dcc.Input(id="kontinuierliche_Variable", type="number", min=0, max=2000, placeholder="Menge in Tonnen eingegeben"),
     html.Br(),
     html.Div([dcc.Markdown('''
-*  Die DIN SPEC 91446 ist eine Klassifizierung von Kunststoff-Rezyklaten durch Datenqualitätslevels für die Verwendung und den (internetbasierten) Handel. 
+\*  Die DIN SPEC 91446 ist eine Klassifizierung von Kunststoff-Rezyklaten durch Datenqualitätslevels für die Verwendung und den (internetbasierten) Handel. 
 Sie wurde von cirplus und DIN im August 2020 mit dem Ziel initiiert, einen lange ersehnten Standard für die Industrie zu schaffen.'''),]),
     html.Br(),
     html.H4("Preisverteilung für Kunststoffe mit den gleichen Angaben", style={'text-align': 'center'}),
