@@ -346,9 +346,9 @@ dash_app.layout = html.Div([
     html.Br(),
     html.Div([dcc.Markdown('''
 #### Wie kann ich für meine Kunststoffabfälle oder Kunststoffrezyklate einen höheren Preis erzielen?    
-Dieses Dashboard beantwortet diese Frage auf Grundlage der Daten von (hier simulierten) schon abgeschlossenen Transaktionen.
+Dieses Dashboard beantwortet diese Frage auf Grundlage der Daten von (hier simulierten) schon abgeschlossenen Transaktionen.   
 Mit den Schaltflächen können Sie Daten zu Ihrem Angebot angeben, welche dann verwendet werden, um die vorhandenen Daten zu filtern. 
-Das Dashboard zeigt Ihnen dann eine Übersicht über die Verteilung der Preise von ähnlichen Angeboten an. Es ist nicht notwendig, alle Felder auszufüllen.
+Das Dashboard zeigt Ihnen dann eine Übersicht über die Verteilung der Preise von ähnlichen Angeboten an. Es ist nicht notwendig, alle Felder auszufüllen.   
 Je mehr Angaben getätigt werden, desto ähnlicher sind die Angebote, deren Preisverteilung angezeigt wird.    
 Im nächsten Schritt können Sie sich anzeigen lassen, wie sich die Preisverteilung ändert, wenn Sie mehr Informationen zu Ihrem Angebot bereitstellen oder, wenn Sie eine Ihrer Angaben ändern.    
 Damit können Sie dann sehen, welche Informationen Sie noch zu Ihrem Angebot hinzufügen können, um einen höheren Preis erzielen zu können.
@@ -373,17 +373,17 @@ Das Dashboard entstand im Rahmen des CYCLOPS Projektes, gefördert durch das Bun
                           {'label': 'Transparent', 'value': 'transparent'},
                           {'label': 'Weiß', 'value': 'weiß'},
                           ], value='NA', id="Dropdown_v2"),
-    dcc.Dropdown(options=[#{'label': 'DIN SPEC 91446 Level auswählen', 'value': 'NA'},
-                          {'label': html.Span(
-                                [
-                                    html.Span('DIN SPEC 91446 Level auswählen'),
-                                    html.Br(),
-                                    html.Span('''Die DIN SPEC 91446 ist eine Klassifizierung von Kunststoff-Rezyklaten durch Datenqualitätslevels
-                                    für die Verwendung und den (internetbasierten) Handel. Sie wurde von cirplus und DIN im August 2020 mit dem Ziel initiiert,
-                                    einen lange ersehnten Standard für die Industrie zu schaffen.''', style={'font-size': 12, 'padding-left': 0, 'color':'gray'}),
-                                    html.Br(),
-                                ], style={'align-items': 'center', 'justify-content': 'center'}
-                            ), 'value': 'NA'},
+    dcc.Dropdown(options=[{'label': 'DIN SPEC 91446 Level auswählen *', 'value': 'NA'},
+                          #{'label': html.Span(
+                          #      [
+                          #          html.Span('DIN SPEC 91446 Level auswählen *'),
+                          #          html.Br(),
+                          #          html.Span('''Die DIN SPEC 91446 ist eine Klassifizierung von Kunststoff-Rezyklaten durch Datenqualitätslevels
+                          #          für die Verwendung und den (internetbasierten) Handel. Sie wurde von cirplus und DIN im August 2020 mit dem Ziel initiiert,
+                          #          einen lange ersehnten Standard für die Industrie zu schaffen.''', style={'font-size': 12, 'padding-left': 0, 'color':'gray'}),
+                          #          html.Br(),
+                          #      ], style={'align-items': 'center', 'justify-content': 'center'}
+                          #  ), 'value': 'NA'},
                           {'label': 'Level 1', 'value': 'Level 1'},
                           {'label': 'Level 2', 'value': 'Level 2'},
                           {'label': 'Level 3', 'value': 'Level 3'},
@@ -401,6 +401,8 @@ Das Dashboard entstand im Rahmen des CYCLOPS Projektes, gefördert durch das Bun
                           ], value='NA', id="Dropdown_v5"),
     dcc.Input(id="kontinuierliche_Variable", type="number", min=0, max=2000, placeholder="Menge in Tonnen eingegeben"),
     html.Br(),
+    html.Div(dcc.Markdown('''
+*  Die DIN SPEC 91446 ist eine Klassifizierung von Kunststoff-Rezyklaten durch Datenqualitätslevels für die Verwendung und den (internetbasierten) Handel. Sie wurde von cirplus und DIN im August 2020 mit dem Ziel initiiert, einen lange ersehnten Standard für die Industrie zu schaffen.'''),]),
     html.Br(),
     html.H4("Preisverteilung für Kunststoffe mit den gleichen Angaben", style={'text-align': 'center'}),
     dcc.Graph(id="Preisstatistik", figure={}),
