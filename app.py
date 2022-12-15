@@ -388,7 +388,7 @@ Das Dashboard entstand im Rahmen des CYCLOPS Projektes, gefördert durch das Bun
                           {'label': 'Level 2', 'value': 'Level 2'},
                           {'label': 'Level 3', 'value': 'Level 3'},
                           {'label': 'Level 4', 'value': 'Level 4'},
-                          ], value='NA', id="Dropdown_v3", maxHeight=300, optionHeight=60),
+                          ], value='NA', id="Dropdown_v3", optionHeight=60),
     dcc.Dropdown(options=[{'label': 'Kunststoffsorte auswählen', 'value': 'NA'},
                           {'label': 'PET', 'value': 'PET'},
                           {'label': 'PP', 'value': 'PP'},
